@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Map Quest</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
+.w3-bar,h1,button {font-family: "Montserrat", sans-serif}
+</style>
+<body>
+
+
+
+<!-- Header -->
+<header class="w3-container w3-amber w3-center" style="padding:128px 16px; background-image: url('https://i.imgur.com/SU1soPN.jpg');"></div>
+    <h1 class="w3-margin w3-jumbo">Map Quest v2</h1>
+</header>
+
+<div class="center">
+<form id="submit_form" method=POST>
+    <div class="row" style="margin-left:650px;">
+        <h2>Know the distance!</h2>
+        <label for="cars"><h3>Choose a metric:</h3></label>
+            <select name="metrichtml" id="metrichtml" style="margin-bottom:18px; margin-left:30px;">
+                <option value="MILES">Miles</option>
+                <option value="KILOMETER">Kilometer</option>
+            </select>
+        <div class="col-lg-6" style="margin-top:18px; margin-bottom:18px; margin-left:30px;">
+            <div><input type="text" placeholder="Starting Location" name="starting" required="required" style="font-size: 18pt; height: 50px; width:500px;"><div class="input_border"></div></div>
+        </div>
+        <div class="col-lg-6" style="margin-bottom:18px; margin-left:30px;">
+            <div><input type="text" placeholder="Destination" name="destination" required="required" style="font-size: 18pt; height: 50px; width:500px;"><div class="input_border"></div></div>
+        </div>
+        <div class="col-lg-6" style="margin-bottom:18px; margin-left:30px;">
+            <div><input type=submit name="knowloc" value="Submit" class="submit" style="font-size: 18pt; height: 50px; width:500px;"><div class="input_border"></div></div>
+        </div>
+    </div>
+    </form>
+    </div>
+
+<div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
+    <h1 class="w3-margin w3-xlarge">OUTPUT {{ metricb }}</h1>
+    <div class="col-lg-6" style="margin-top:18px; margin-bottom:18px; margin-left:580px;">
+        <table style="border-collapse: collapse; margin: 25px 0; font-size: 1; font-family: sans-serif; min-width: 400px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);">
+            <thead style="background-color: #009879; color: #ffffff; text-align: center;">
+                <tr style="background-color: #009879; color: #ffffff; text-align: center;">
+                    <th style="padding: 12px 15px;">Starting Location</th>
+                    <th style="padding: 12px 15px;">Destination</th>
+                    <th style="padding: 12px 15px;">Trip Duration</th>
+                    <th style="padding: 12px 15px;">Distance</th>
+                    <th style="padding: 12px 15px;">Fuel Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="font-weight: bold; color: #009879;">
+                    <td style="padding: 12px 15px; text-align: center;">{{ starting }}</td>
+                    <td style="padding: 12px 15px; text-align: center;">{{ destination }}</td>
+                    <td style="padding: 12px 15px; text-align: center;;">{{ durahtml }}</td>
+                    <td style="padding: 12px 15px; text-align: center;">{{ dishtml }}</td>
+                    <td style="padding: 12px 15px; text-align: center;">{{ fuel }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
