@@ -1,66 +1,42 @@
 import urllib.parse
 import requests
-from tabulate import tabulate
+from flask import Flask
+from flask import request
+from flask import render_template
 
-main_api = "https://www.mapquestapi.com/directions/v2/route?" 
+main_api = "https://www.mapquestapi.com/directions/v2/route?"
 key = "fZadaFOY22VIEEemZcBFfxl5vjSXIPpZ"
 
-historyMiles = [['Starting Location', 'Destination', 'Trip Duration', 'Miles', 'Fuel Used (Gal):']]
-historyKilo = [['Starting Location', 'Destination', 'Trip Duration', 'Kilometers', 'Fuel Used (Ltr)']]
+mapquest = Flask(__name__)
 
-while True:
-    orig = input("Starting Location: ")
-    if orig == "quit" or orig == "q":
-        break
-    dest = input("Destination: ")
-    if dest == "quit" or dest == "q":
-        break
+@mapquest.route("/", methods=['GET', 'POST'])
+def input():
+    global orig, dest, duration, distance, fuelused, metrica
+    if request.method == "GET":
+        return render_template('index.html')
 
-    metric = input("Enter (M) for Miles or (K) for kilometer: ")
-    if metric == "m" or metric == "M":
+    if request.method == "POST":
+        orig = request.form['starting']
+        dest = request.form['destination']
+        metric = request.form['metrichtml']
+
         url = main_api + urllib.parse.urlencode({"key": key, "from":orig, "to":dest})
-        print("URL: " + (url))
         json_data = requests.get(url).json()
-        json_status = json_data["info"]["statuscode"]
 
-
-        if json_status == 0:
+        if metric == "MILES":
             duration = (json_data["route"]["formattedTime"])
-            numiles = str(json_data["route"]["distance"])
-            numfuelgal = str(json_data["route"]["fuelUsed"])
+            distance = str(json_data["route"]["distance"]) + ' Miles'
+            fuelused = str(json_data["route"]["fuelUsed"]) + ' Gal'
+            metrica = 'FOR ' + metric
 
-            currentMiles = [['{}'.format(orig),'{}'.format(dest),'{}'.format(duration), '{}'.format(numiles),'{}'.format(numfuelgal)]]
-            historyMiles.extend(currentMiles)
-            print(tabulate(historyMiles, headers='firstrow', tablefmt='fancy_grid'))
-            for each in json_data["route"]["legs"][0]["maneuvers"]:
-                print((each["narrative"]) + " (" + str(json_data["route"]["distance"]) + " Miles)")
-            print("=============================================\n")
-
-    elif metric == "K" or metric == "k":
-        if json_status == 0:
+        elif metric == "KILOMETER":
             duration = (json_data["route"]["formattedTime"])
-            numkil = str("{:.2f}".format((json_data["route"]["distance"])*1.61))
-            numfuellit = str("{:.2f}".format((json_data["route"]["fuelUsed"])*3.78))
+            distance = str("{:.2f}".format((json_data["route"]["distance"])*1.61)) + ' Kilometer'
+            fuelused = str("{:.2f}".format((json_data["route"]["fuelUsed"])*3.78)) + ' Ltr'
+            metrica = 'FOR ' + metric
 
-            currentKilo = [['{}'.format(orig),'{}'.format(dest),'{}'.format(duration), '{}'.format(numkil),'{}'.format(numfuellit)]]
-            historyKilo.extend(currentKilo)
-            print(tabulate(historyKilo, headers='firstrow', tablefmt='fancy_grid'))
-            for each in json_data["route"]["legs"][0]["maneuvers"]:
-                print((each["narrative"]) + " (" + str("{:.2f}".format((each["distance"])) + " Kilometers)"))
-            print("=============================================\n")
+    return render_template('index.html', starting = orig, destination = dest, durahtml = duration, dishtml = distance,
+        fuel = fuelused, metricb = metrica)
 
-    elif json_status == 402:
-        print("**********************************************")
-        print("Status Code: " + str(json_status) + "; Invalid user inputs for one or both locations.")
-        print("**********************************************\n")
-    elif json_status == 611:
-        print("**********************************************")
-        print("Status Code: " + str(json_status) + "; Missing an entry for one or both locations.")
-        print("**********************************************\n")
-    else:
-        print("************************************************************************")
-        print("For Staus Code: " + str(json_status) + "; Refer to:")
-        print("https://developer.mapquest.com/documentation/directions-api/status-codes")
-        print("************************************************************************\n")
-
-
+if __name__ == "__main__":
+    mapquest.run(host="0.0.0.0", port=8080)
